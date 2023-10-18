@@ -1,0 +1,44 @@
+version: "3"
+services:
+  postgres:
+    image: postgis/postgis:15-3.3
+    #command: "-c log_statement=all"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  dbmate:
+    build: db
+    command: --wait --no-dump-schema up
+    environment:
+      DATABASE_URL: "postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres?sslmode=disable"
+  postgrest:
+    image: postgrest/postgrest:v10.1.2
+    environment:
+      PGRST_DB_URI: "postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres"
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_DB_ANON_ROLE: web_anon
+  wizard:
+    build:
+      context: wizard
+    environment:
+      OPENREFINE_URL: https://openrefine.nina.no
+      OPENREFINE_PUBLIC_URL: http://openrefine.nina.no
+      POSTGREST_URL: http://postgrest:3000
+      POSTGREST_TOKEN: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2ODUyMDYxNjAsInJvbGUiOiJ3cml0ZXIifQ.dPKc0F8lG8-Kd9PVgotUpbmsH4bBWFQpp_epZCcAQMk"
+      LOGGING: DEBUG
+    tty: true
+    stdin_open: true
+  pgweb:
+    image: sosedoff/pgweb:latest
+    environment:
+      PGWEB_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres?sslmode=disable
+      WAIT_FOR: postgres:5432
+  nginx:
+    build: nginx
+    ports:
+      - 8000:80
+volumes:
+  pgdata:
