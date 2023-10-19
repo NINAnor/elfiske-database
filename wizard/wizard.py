@@ -21,12 +21,15 @@ logging.debug(os.environ)
 
 ALLOWED_SHEETS = {
     'L_RedskapID': {
-        'name': 'redscaper',
+        'name': 'import_redskaper',
         'ignore': 0,
-        'mappings': {
-            'Redskap': 'navn', 
-            'RedskapID': 'id',
-        },
+        'conflict': {
+            'resolution': 'ignore-duplicates',
+        }
+    },
+    'L_Art_formID': {
+        'name': 'import_arter',
+        'ignore': 0,
         'conflict': {
             'resolution': 'ignore-duplicates',
         }
@@ -49,52 +52,58 @@ def wizard():
         data = []
         config = ALLOWED_SHEETS[sheet_name]
         put_text(f"Preparing to import {sheet_name}...")
-        for workbook in workbooks:
-            rows = workbook[sheet_name].iter_rows()
-            for _ in range(config['ignore']):
-                next(rows)
-            header = [config['mappings'][cell.value] if cell.value in config['mappings'] else cell.value for cell in next(rows)]
-            for row in rows:
-                row = [cell.value for cell in row]
-                # logging.debug(row)
-                if not any(row):
-                    continue
-                data.append(dict(zip(header, row)))
-
-        logging.debug(data)
-
-        put_text(
-            f"{sheet_name} have loaded."
+        result = actions(
+            buttons=[
+                {"label": "Import", "value": "import", "color": "primary", "type": "submit"},
+                {"label": "Skip", "value": "skip", "color": "default", "type": "cancel"},
+            ]
         )
+        if result:
+            for workbook in workbooks:
+                rows = workbook[sheet_name].iter_rows()
+                for _ in range(config['ignore']):
+                    next(rows)
+                header = [cell.value for cell in next(rows)]
+                for row in rows:
+                    row = [cell.value for cell in row]
+                    logging.debug(row)
+                    if not any(row):
+                        continue
+                    data.append(dict(zip(header, row)))
 
-        actions(
-            buttons=[{"label": "Import", "value": "import", "color": "primary"}]
-        )
-        clear("import")
-        put_text("Importing...")
-        try:
-            url = POSTGREST_URL + "/" + config['name']
-            headers = {"Content-Type": "application/json"}
-            if 'conflict' in config:
-                if 'field' in config['conflict']:
-                    url += f"?on_conflict={config['conflict']['field']}"
-                
-                headers["Prefer"] = f"resolution={config['conflict']['resolution']}"
+            logging.debug(data)
 
-            if POSTGREST_TOKEN:
-                headers["Authorization"] = "Bearer " + POSTGREST_TOKEN
-
-            response = requests.post(
-                url,
-                headers=headers,
-                data=orjson.dumps(data),
+            put_text(
+                f"{sheet_name} have loaded."
             )
-            logging.debug(response.text)
-            response.raise_for_status()
-        except Exception as instance:
-            put_error(str(instance) + "\n" + response.text)
+            put_text("Importing...")
+            try:
+                url = POSTGREST_URL + "/" + config['name']
+                headers = {"Content-Type": "application/json"}
+                if 'conflict' in config:
+                    if 'field' in config['conflict']:
+                        url += f"?on_conflict={config['conflict']['field']}"
+                    
+                    headers["Prefer"] = f"resolution={config['conflict']['resolution']}"
+
+                if POSTGREST_TOKEN:
+                    headers["Authorization"] = "Bearer " + POSTGREST_TOKEN
+
+                response = requests.post(
+                    url,
+                    headers=headers,
+                    data=orjson.dumps(data),
+                )
+                logging.debug(response.text)
+                response.raise_for_status()
+            except Exception as instance:
+                put_error(str(instance) + "\n" + response.text)
+            else:
+                put_success(f"{sheet_name} has been imported sucessfully.")
         else:
-            put_success("Data has been imported sucessfully.")
+            put_text("Skipped")
+
+    put_success("Done!")
 
 if __name__ == "__main__":
     start_server(wizard, port=8000, debug=True)
