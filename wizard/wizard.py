@@ -34,6 +34,27 @@ ALLOWED_SHEETS = {
             'resolution': 'ignore-duplicates',
         }
     },
+    "Admin og Driftsopplysninger": {
+        'name': 'import_admin_og_driftsopplysninger',
+        'ignore': 1,
+        'conflict': {
+            'resolution': 'ignore-duplicates',
+        }
+    },
+    "Stasjoner og feltskjema": {
+        'name': 'import_stasjoner_og_feltskjema',
+        'ignore': 1,
+        'conflict': {
+            'resolution': 'ignore-duplicates',
+        }
+    },
+    "Enkeltfisk": {
+        'name': 'import_enkeltfisk',
+        'ignore': 0,
+        'conflict': {
+            'resolution': 'ignore-duplicates',
+        }
+    },
 }
 
 

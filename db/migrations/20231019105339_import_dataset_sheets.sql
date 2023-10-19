@@ -1,0 +1,107 @@
+-- migrate:up
+
+create table import_admin_og_driftsopplysninger (
+    "Vassdragsnummer hovedvassdrag" text null,
+    "Vassdragsnummer" text null,
+    "Vassdragsnavn" text null,
+    "Feltoperasjonsnr" text null,
+    "Aktivitet" text null,
+    "Aktivitetsbeskrivelse" text null,
+    "Redskap" text null,
+    "Livsfaser" text null,
+    "Fagansvarlig organisasjon" text null,
+    "Prosjektnr" int null,
+    "Prosjektnavn" text null,
+    "Prosjektleder" text null,
+    "Feltoperator" text null,
+    "Kontaktpersoner" text null,
+    "Fangstperiodedefinisjoner" text null,
+    "Oppdragsgivere" text null,
+    "Tilskuddsgivere" text null,
+    "Merknader" text null
+);
+
+create table import_stasjoner_og_feltskjema (
+    "Vassdragsnummer" text null,
+    "Loknr" text null,
+    "Lokalitetsnavn" text null,
+    "Lokangivelse" text null,
+    "Beskrivelse_lokalitet" text null,
+    "UTM_datum" text null,
+    "UTM_sone" text null,
+    "Øst" int null,
+    "Nord" int null,
+    "Lengdegrad" text null,
+    "Breddegrad" text null,
+    "Påvirkning" text null,
+    "Anadrom" text null,
+    "Allopatrisk_Sympatrisk" text null,
+    "Merknader" text null,
+    "Feltarbeidere" text null,
+    "Dato" text null,
+    "Stasjon_lengde" int null,
+    "Stasjon_bredde" int null,
+    "Areal_stasjon" int null,
+    "Målt_Vannføring" text null,
+    "Kvalitativ_vannføring" text null,
+    "Metode" text null,
+    "Hele_bredde_avfisket" text null,
+    "Total_bredde_på_stedet" int null,
+    "Våt_bredde" int null,
+    "Evt_tørrfall" text null,
+    "Type_apparat" text null,
+    "Strømstyrke" int null,
+    "Frekvens" text null,
+    "Håvtype" text null,
+    "Værforhold" text null,
+    "Dyp_maks" int null,
+    "Dyp_middels" int null,
+    "Vanntemperatur" text null,
+    "Lufttemperatur" text null,
+    "Sikt_vann" text null,
+    "Elveklasse" text null,
+    "Substrat_1" text null,
+    "Substrat_2" text null,
+    "Gjenklogging" text null,
+    "Egnet gytesubstrat" int null,
+    "Dekningsgrad % Alger" text null,
+    "Dekningsgrad % Moser" text null,
+    "Kantvegetasjon" text null,
+    "Dekningsgrad % Overhengende vegetasjon" text null,
+    "Andre_lokale_forhold" text null,
+    "Ledningsevne" text null,
+    "pH" text null,
+    "Merknader2" text null,
+    "Helper" text null
+);
+
+create table import_enkeltfisk (
+    "Vassdragsnummer" text null,
+    "Loknr" text null,
+    "Dato" text null,
+    "Elfiskeomgang" int null,
+    "Lopenr" int null,
+    "Art" text null,
+    "Type" text null,
+    "Lengde_total" int null,
+    "Lengde_gaffel" int null,
+    "Vekt" int null,
+    "Kjønn" text null,
+    "Kjønn_stadium" text null,
+    "Tilordnet_alder_lengde" int null,
+    "Tilordnet_alder_av" text null,
+    "Avlest_alder_skjell" int null,
+    "Avlest_alder_otolitt" int null,
+    "Alder_avlest_av" text null,
+    "Gjenutsatt" text null,
+    "Merkenr" text null,
+    "Merketype" text null,
+    "Merknad" text null
+);
+
+grant insert on import_stasjoner_og_feltskjema to writer;
+grant insert on import_admin_og_driftsopplysninger to writer;
+grant insert on import_enkeltfisk to writer;
+
+-- migrate:down
+
