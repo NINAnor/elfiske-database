@@ -1,41 +1,83 @@
 -- migrate:up
 
-create table import_arter (
-    "Art_formID" int not null,
-    "Art_form" char(255) not null
-);
-
 create table arter (
-    id int not null primary key,
-    navn char(255) not null
+    id int primary key,
+    navn varchar unique
 );
 
 -- needed for conflict resolution
-grant select, insert on import_arter to writer;
 grant select, insert on arter to writer;
 grant select on arter to web_anon;
 
-
-create function import_arter() returns trigger language plpgsql
-as $$
-begin
-    insert into arter values(
-        new."Art_formID",
-        new."Art_form"
-    ) on conflict do nothing;
-    return null;
-exception
-    when others then
-        raise exception using
-            errcode = sqlstate,
-            message = sqlerrm,
-            detail = new;
-end;
-$$;
-
-create trigger import_arter
-    before insert on import_arter
-    for each row
-    execute function import_arter();
+insert into arter(navn, id) values 
+('laks', 1),
+('sjøaure', 2),
+('sjørøye', 3),
+('relikt laks', 4),
+('aure', 5),
+('røye', 6),
+('sik', 7),
+('harr', 8),
+('lagesild', 9),
+('krøkle', 10),
+('regnbueaure', 11),
+('bekkerøye', 12),
+('kanadarøye', 13),
+('pukkellaks', 14),
+('hundelaks (keta)', 15),
+('coho silver', 16),
+('chinook king', 17),
+('sockeye red', 18),
+('donaulaks', 19),
+('abbor', 20),
+('gjørs', 21),
+('hork', 22),
+('asp', 23),
+('brasme', 24),
+('flire', 25),
+('gullfisk', 26),
+('karpe', 27),
+('karuss', 28),
+('laue', 29),
+('gullbust', 30),
+('mort', 31),
+('stam', 32),
+('sørv', 33),
+('vederbuk', 34),
+('suter', 35),
+('ørekyte', 36),
+('gjedde', 37),
+('ål', 38),
+('lake', 39),
+('trepigget stingsild', 40),
+('nipigget stingsild', 41),
+('stør', 42),
+('steinulke', 43),
+('skrubbe', 44),
+('dvergmalle', 45),
+('hornulke', 46),
+('hvitfinnet ferskvannsulke', 47),
+('sandkryper', 48),
+('regnlaue', 49),
+('solabbor', 50),
+('brøding', 51),
+('krøding', 52),
+('splake', 53),
+('hybrid laks/ørret', 54),
+('hybrid laks/røye', 55),
+('havniøye', 61),
+('elveniøye', 62),
+('bekkeniøye', 63),
+('arktisk niøye', 64),
+('ferskvannskreps', 71),
+('signalkreps', 72),
+('prikkaure', 80),
+('dansk bekkeaure', 81),
+('dvergrøye/dypvannrøye', 82),
+('andre sikformer', 83),
+('stamsild', 90),
+('ingen fisk', 99),
+('usikker', 999);
 
 -- migrate:down
+drop table arter;
