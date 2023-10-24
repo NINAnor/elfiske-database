@@ -153,11 +153,11 @@ declare
 begin
     select id into stasjon_id from stasjoner as st where st.vassdrag = data->>'Vassdragsnummer' and st.loknr = data->>'Loknr';
 
-    if data->>'Substrat_1' then
+    if data->>'Substrat_1' is not null then
         substrater := substrater || lower(data->>'Substrat_1')::substrat;
     end if;
 
-    if data->>'Substrat_2' then
+    if data->>'Substrat_2' is not null then
         substrater := substrater || lower(data->>'Substrat_2')::substrat;
     end if;
 
