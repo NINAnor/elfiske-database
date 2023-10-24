@@ -153,8 +153,13 @@ declare
 begin
     select id into stasjon_id from stasjoner as st where st.vassdrag = data->>'Vassdragsnummer' and st.loknr = data->>'Loknr';
 
-    substrater := substrater || lower(data->>'Substrat_1')::substrat;
-    substrater := substrater || lower(data->>'Substrat_2')::substrat;
+    if data->>'Substrat_1' then
+        substrater := substrater || lower(data->>'Substrat_1')::substrat;
+    end if;
+
+    if data->>'Substrat_2' then
+        substrater := substrater || lower(data->>'Substrat_2')::substrat;
+    end if;
 
     insert into kantvegetasjon values (lower(data->>'Kantvegetasjon')) on conflict do nothing;
 
