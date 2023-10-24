@@ -107,7 +107,7 @@ begin
         when 'WGS 84-32V' then
             epsg := 32632;
         else
-            raise exception '% not supported', epsg_description
+            raise exception '% not supported', epsg_description;
     end case;
     insert into stasjoner(
         vassdrag,
