@@ -17,11 +17,11 @@ jobs:
       matrix:
         include:
           - context: db
-            image: ghcr.io/ninanor/elfiske-dbmate
+            image: ghcr.io/ninanor/elfiske-database/dbmate
           - context: wizard
-            image: ghcr.io/ninanor/elfiske-wizard
+            image: ghcr.io/ninanor/elfiske-database/wizard
           - context: nginx
-            image: ghcr.io/ninanor/elfiske-nginx
+            image: ghcr.io/ninanor/elfiske-database/nginx
     permissions:
       contents: read
       packages: write
